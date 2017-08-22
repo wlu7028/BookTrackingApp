@@ -17,6 +17,16 @@ class BooksApp extends React.Component {
       console.log(books)
     })
   }
+
+  moveBookToShelf = (bookId, shelf) =>{
+      let book = this.state.books.filter(x => x.id === bookId)[0]
+      book.shelf = shelf
+      this.setState((state) => ({
+          books : state.books
+      })) 
+      BooksAPI.update(book,shelf)
+  }
+
   render() {
     return (
       <div className="app">
@@ -29,6 +39,7 @@ class BooksApp extends React.Component {
 
         <Route exact path='/' render={({ history }) => ( 
           <ListBooks
+            onSelectChange={this.moveBookToShelf}
             books={this.state.books}
           />
         )}/>

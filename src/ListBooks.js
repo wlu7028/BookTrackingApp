@@ -4,13 +4,38 @@ import PropTypes from 'prop-types'
 
 class ListBooks extends Component {
     static propTypes = {
-      books: PropTypes.array.isRequired
+      books: PropTypes.array.isRequired,
+      onSelectChange: PropTypes.func.isRequired
     }
     state = {
-
+      
     }
 
+    
+
     render() {
+      const{books, onSelectChange} = this.props
+        
+      let generateList = (book) => {
+          return <li key={book.id}>
+                <div className="book">
+                  <div className="book-top">
+                      <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})` }}></div>
+                      <div className="book-shelf-changer">
+                        <select value={book.shelf} onChange={(event) => onSelectChange(book.id,event.target.value)}>
+                          <option value="none" disabled>Move to...</option>
+                          <option value="currentlyReading">Currently Reading</option>
+                          <option value="wantToRead">Want to Read</option>
+                          <option value="read">Read</option>
+                          <option value="none">None</option>
+                        </select>
+                       </div>
+                     </div>
+                    <div className="book-title">{book.title}</div>
+                    <div className="book-authors">{book.authors}</div>
+                  </div>
+                </li>
+    }
 
         return (
             <div className="list-books">
@@ -24,25 +49,8 @@ class ListBooks extends Component {
                   <div className="bookshelf-books">
                     <ol className="books-grid">
                       {
-                        this.props.books.filter((book) => book.shelf ==="currentlyReading").map((book) => (
-                          <li key={book.id}>
-                            <div className="book">
-                              <div className="book-top">
-                                <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})` }}></div>
-                                <div className="book-shelf-changer">
-                                  <select>
-                                    <option value="none" disabled>Move to...</option>
-                                    <option value="currentlyReading">Currently Reading</option>
-                                    <option value="wantToRead">Want to Read</option>
-                                    <option value="read">Read</option>
-                                    <option value="none">None</option>
-                                  </select>
-                                </div>
-                              </div>
-                              <div className="book-title">{book.title}}</div>
-                              <div className="book-authors">{book.authors}</div>
-                            </div>
-                          </li>
+                        books.filter((book) => book.shelf ==="currentlyReading").map((book) => (
+                          generateList(book)                  
                         ))
                       }          
                     </ol>
@@ -53,25 +61,8 @@ class ListBooks extends Component {
                   <div className="bookshelf-books">
                     <ol className="books-grid">
                     {
-                      this.props.books.filter((book) => book.shelf ==="wantToRead").map((book) => (
-                        <li key={book.id}>
-                          <div className="book">
-                            <div className="book-top">
-                              <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})` }}></div>
-                              <div className="book-shelf-changer">
-                                <select>
-                                  <option value="none" disabled>Move to...</option>
-                                  <option value="currentlyReading">Currently Reading</option>
-                                  <option value="wantToRead">Want to Read</option>
-                                  <option value="read">Read</option>
-                                  <option value="none">None</option>
-                                </select>
-                              </div>
-                            </div>
-                            <div className="book-title">{book.title}}</div>
-                            <div className="book-authors">{book.authors}</div>
-                          </div>
-                        </li>
+                      books.filter((book) => book.shelf ==="wantToRead").map((book) => (
+                        generateList(book) 
                       ))
                     }
                     </ol>
@@ -82,25 +73,8 @@ class ListBooks extends Component {
                   <div className="bookshelf-books">
                     <ol className="books-grid">
                     {
-                      this.props.books.filter((book) => book.shelf ==="read").map((book) => (
-                        <li key={book.id}>
-                          <div className="book">
-                            <div className="book-top">
-                              <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})` }}></div>
-                              <div className="book-shelf-changer">
-                                <select>
-                                  <option value="none" disabled>Move to...</option>
-                                  <option value="currentlyReading">Currently Reading</option>
-                                  <option value="wantToRead">Want to Read</option>
-                                  <option value="read">Read</option>
-                                  <option value="none">None</option>
-                                </select>
-                              </div>
-                            </div>
-                            <div className="book-title">{book.title}}</div>
-                            <div className="book-authors">{book.authors}</div>
-                          </div>
-                        </li>
+                      books.filter((book) => book.shelf ==="read").map((book) => (
+                        generateList(book) 
                       ))
                     }
                     </ol>
