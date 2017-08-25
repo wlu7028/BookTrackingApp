@@ -1,36 +1,56 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom'
-import escapeRegExp from 'escape-string-regexp'
 import PropTypes from 'prop-types'
 import generateList from './ShowBooks'
+import * as BooksAPI from './BooksAPI'
+import unionBy from 'lodash/unionBy'
+import differenceBy from 'lodash/differenceBy'
 
 class SearchBook extends Component {
   static propTypes = {
-    books: PropTypes.array.isRequired,
-    onSelectChange: PropTypes.func.isRequired
+    books: PropTypes.array.isRequired
   }
 
   state = {
-    query: ''
+    query: '',
+    searchedBooks: []
   }
 
   updateQuery = (query) => {
     this.setState({ query })
   }
 
+  searchBook(query){
+    BooksAPI.search(query,'10').then((searchedBooks) => {
+      this.setState({searchedBooks})
+    })
+  }
+
+  moveSearchedBookToShelf = (bookId, shelf) =>{
+    let book = this.state.searchedBooks.filter(x => x.id === bookId)[0]
+    book.shelf = shelf
+    this.setState((state) => ({
+      searchedBooks : state.searchedBooks
+  }))
+    BooksAPI.update(book,shelf)
+}
   
     render(){
-      const{books, onSelectChange} = this.props
-      const { query } = this.state
+      const{books} = this.props
+      const { query,searchedBooks } = this.state
 
        
 
       let showingBooks
       if (query) {
-        const match = new RegExp(escapeRegExp(query), 'i')
-        showingBooks = books.filter((book) => match.test(book.title) || match.test(book.authors))
+        this.searchBook(query)        
+        showingBooks = unionBy(books,searchedBooks,'id')
+        let a= differenceBy(showingBooks,books,'id').map((book) => {
+          book.shelf = 'none'
+          return book
+        })
       } else {
-        showingBooks = books
+        showingBooks = []
       }
         return (
             <div className="search-books">
@@ -46,7 +66,7 @@ class SearchBook extends Component {
               <ol className="books-grid">
                 {
                   showingBooks.map((book) => (
-                    generateList(book,onSelectChange)                  
+                    generateList(book,this.moveSearchedBookToShelf)                  
                   ))
                 }  
               </ol>
