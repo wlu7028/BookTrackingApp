@@ -5,10 +5,12 @@ import generateList from './ShowBooks'
 import * as BooksAPI from './BooksAPI'
 import unionBy from 'lodash/unionBy'
 import differenceBy from 'lodash/differenceBy'
+import intersectionBy from 'lodash/intersectionBy'
 
 class SearchBook extends Component {
   static propTypes = {
-    books: PropTypes.array.isRequired
+    books: PropTypes.array.isRequired,
+    onSelectChange: PropTypes.func.isRequired
   }
 
   state = {
@@ -33,6 +35,7 @@ class SearchBook extends Component {
       searchedBooks : state.searchedBooks
   }))
     BooksAPI.update(book,shelf)
+    this.props.onSelectChange()
 }
   
     render(){
@@ -43,9 +46,10 @@ class SearchBook extends Component {
 
       let showingBooks
       if (query) {
-        this.searchBook(query)        
-        showingBooks = unionBy(books,searchedBooks,'id')
-        let a= differenceBy(showingBooks,books,'id').map((book) => {
+        this.searchBook(query)
+        showingBooks = intersectionBy(books,searchedBooks,'id')        
+        showingBooks = unionBy(showingBooks,searchedBooks,'id')
+        differenceBy(showingBooks,books,'id').map((book) => {
           book.shelf = 'none'
           return book
         })

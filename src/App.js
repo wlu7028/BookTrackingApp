@@ -12,9 +12,7 @@ class BooksApp extends React.Component {
   }
 
   componentDidMount() {
-    BooksAPI.getAll().then((books) => {
-      this.setState({books})
-    })
+    this.getBooksInCurrentShelf()
   }
 
   moveBookToShelf = (bookId, shelf) =>{
@@ -26,6 +24,11 @@ class BooksApp extends React.Component {
       BooksAPI.update(book,shelf)
   }
 
+  getBooksInCurrentShelf = () => {
+    BooksAPI.getAll().then((books) => {
+      this.setState({books})
+    })
+  }
   
 
   render() {
@@ -35,7 +38,7 @@ class BooksApp extends React.Component {
         <Route path='/search' render={() => (        
           <SearchBook 
             books={this.state.books}
-            onSelectChange={this.moveBookToShelf}
+            onSelectChange={this.getBooksInCurrentShelf}
           />
         )}/> 
 

@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-export default  (book,onSelectChange) => {
+const generateList =  (book,onSelectChange) => {
     return <li key={book.id}>
           <div className="book">
             <div className="book-top">
@@ -22,3 +22,4 @@ export default  (book,onSelectChange) => {
           </li>
 }
 
+export default generateList
