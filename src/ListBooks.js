@@ -8,16 +8,42 @@ class ListBooks extends Component {
       books: PropTypes.array.isRequired,
       onSelectChange: PropTypes.func.isRequired
     }
-    state = {
-      
-    }
-
     
 
     render() {
       const{books, onSelectChange} = this.props
+      const shelves = [
+        {
+          id: 'currentlyReading',
+          title: 'Currently Reading',
+          books: books.filter(book => book.shelf === 'currentlyReading')
+        },
+        {
+          id: 'wantToRead',
+          title: 'Want To Read',
+          books: books.filter(book => book.shelf === 'wantToRead')
+        },
+        {
+          id: 'read',
+          title: 'Read',
+          books: books.filter(book => book.shelf === 'read')
+        }
+      ]
         
-    
+      function BookShelf(props) {
+        return <div className="bookshelf">
+                    <h2 className="bookshelf-title">{props.title}</h2>
+                    <div className="bookshelf-books">
+                      <ol className="books-grid">
+                        {
+                          props.books.map((book) => (
+                            generateList(book,onSelectChange)                  
+                          ))
+                        }          
+                      </ol>
+                    </div>
+                  </div>
+      }
 
         return (
             <div className="list-books">
@@ -26,42 +52,9 @@ class ListBooks extends Component {
             </div>
             <div className="list-books-content">
               <div>
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Currently Reading</h2>
-                  <div className="bookshelf-books">
-                    <ol className="books-grid">
-                      {
-                        books.filter((book) => book.shelf ==="currentlyReading").map((book) => (
-                          generateList(book,onSelectChange)                  
-                        ))
-                      }          
-                    </ol>
-                  </div>
-                </div>
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Want to Read</h2>
-                  <div className="bookshelf-books">
-                    <ol className="books-grid">
-                    {
-                      books.filter((book) => book.shelf ==="wantToRead").map((book) => (
-                        generateList(book,onSelectChange)   
-                      ))
-                    }
-                    </ol>
-                  </div>
-                </div>
-                <div className="bookshelf">
-                  <h2 className="bookshelf-title">Read</h2>
-                  <div className="bookshelf-books">
-                    <ol className="books-grid">
-                    {
-                      books.filter((book) => book.shelf ==="read").map((book) => (
-                        generateList(book,onSelectChange)    
-                      ))
-                    }
-                    </ol>
-                  </div>
-                </div>
+                {
+                  shelves.map(shelf => (<BookShelf id={shelf.id} title={shelf.title} books={shelf.books} />))
+                }                              
               </div>
             </div>
             <div className="open-search">
